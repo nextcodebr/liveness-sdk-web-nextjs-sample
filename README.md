@@ -1,34 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NXCD - LIVENESS WEB - NEXTJS
 
-## Getting Started
+Detecção e padronização de fotos da face - Exemplo feito para NEXTJS
 
-First, run the development server:
+### Mais exemplos de configuração
+Outras configurações podem ser encontradas no repositório original do SDK:
+[liveness-sdk-web-sample](https://github.com/nextcodebr/liveness-sdk-web-sample)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Ambientes:
+- **Desenvolvimento**: `HTTP` só é possível rodar a aplicação em `localhost`. Exemplo: `http://localhost:3000`
+- **Produção**: obrigatório ser `HTTPS` devido às restrições dos navegadores
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Procedimentos de utilização:
+Exemplo de utilização em [index.tsx](https://github.com/nextcodebr/liveness-sdk-web-nextjs-sample/blob/master/pages/index.tsx)
+1. Com a sua apikey, obter o JWT para repassar para o Liveness
+2. Configurar a Liveness com o token recebido `configuration.token`
+3. Definir qual elemento da DOM terá a câmera injetada pela biblioteca 
+4. Fazer demais configurações necessárias:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+`const configuration = {
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+          width: 720, // largura de exibição da câmera
+          isDebug: false,
+          token: jwt,
+          faceapiPath: "/libs", // caminho para a faceapi e modelos baixados
+          livenessUrlBase: "https://api-homolog.nxcd.app", // endpoint da api liveness
+          livenessConfirmEndpoint: "", // opcional - default: /liveness
+          isShowPreview: true, // exibir um preview da foto que será enviada
+          errorCallback: error, // metodo de callback em caso de erro
+          successCallback: success, // metodo de callback em caso de sucesso,
+          brightnessControl: 108, // padrão 108 - controla a tolerancia do brilho para submeter a selfie (quanto menor o valor, maior a tolerancia e possibilidade de isAlive=false)
+          luminanceControl: 23, // padrão 23 - controla a tolerancia da luminância para submeter a selfie (quanto menor o valor, maior a tolerancia e possibilidade de isAlive=false)
+          ellipseStrokeStyle: "#D02780", // padrão '#D02780' - cor da elipse que encaixa o rosto - pode ser o nome da cor ou hexadecimal
+          activatedEllipseStrokeStyle: "#46E3C3", // padrão '#46E3C3' - cor da elipse ao detectar o rosto - pode ser o nome da cor ou hexadecimal
+          boxMessageBackgroundColor: "#D02780", // padrão '#D02780' - cor de fundo da caixa de mensagem - pode ser o nome da cor ou hexadecimal
+          boxMessageTextColor: "#f3f3f5", // padrão '#f3f3f5' - cor a fonte da caixa de mensagem - pode ser o nome da cor ou hexadecimal
+          configEyesBoxHeight: 100, // padrão 100 - setar a altura da caixa dos olhos em pixels (soma ou subtrai da altura padrão)
+        };`
+`window.liveness.stop(); parar o uso da camera`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`window.liveness.setMinBrightness(x) para setar o brilho mínimo de tolerancia (quanto menor, mais chances de isAlive=false)`
 
-## Learn More
+`window.liveness.setMinLuminance(x) para setar a luminância mínima de tolerancia (quanto menor, mais chances de isAlive=false)`
 
-To learn more about Next.js, take a look at the following resources:
+`window.liveness.setEyesBoxHeight(200); para setar a altura da caixa dos olhos em pixels (soma ou subtrai da altura padrão)`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Após a configuração, instanciar o Liveness:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`const videoWrapper = document.getElementById("video-wrapper");`
 
-## Deploy on Vercel
+`const liveness = new Liveness(videoWrapper, config);`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Iniciar:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`liveness.start();`
