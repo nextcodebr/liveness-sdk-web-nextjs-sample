@@ -35,7 +35,9 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div id="video-wrapper"></div>
+      <div className="container">
+        <div id="video-wrapper"></div>
+      </div>
 
       <Script
         src="https://cdn.jsdelivr.net/gh/nextcodebr/liveness-sdk-web-sample/dist/v5.2/liveness.js"
@@ -43,7 +45,7 @@ const Home: NextPage = () => {
           const jwt = await getJWT();
 
           const config = {
-            width: window.innerWidth / 1.9,
+            width: 720,
             token: jwt,
             isDebug: true,
             faceapiPath:
@@ -61,6 +63,7 @@ const Home: NextPage = () => {
 
           window.liveness = new Liveness(videoWrapper, config);
           window.liveness.start();
+          window.liveness.setEyesBoxHeight(10); // achatar a elipse
         }}
         onError={(err) => {
           console.log(err);
